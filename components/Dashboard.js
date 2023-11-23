@@ -5,6 +5,8 @@ import Welcome from "./Welcome";
 import Timer from "./TimerScreen";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Stopwatch from "./Stopwatch";
+import Login from "./Login";
+import Settings from "./Settings";
 
 const Tab = createBottomTabNavigator();
 
@@ -16,7 +18,6 @@ export default function Dashboard() {
         tabBarLabelStyle: {
           color: 'rgba(255, 248, 214, 0.50)',
           fontSize: 14,
-          fontFamily: 'Inter',
           fontWeight: '700',
           wordBreak: 'break-word', 
         },
