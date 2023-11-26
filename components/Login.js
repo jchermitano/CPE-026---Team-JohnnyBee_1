@@ -6,13 +6,13 @@ import Logo from "./Logo";
 export default function Login({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
+  
   const handleLogin = async () => {
     try {
       const user = await Parse.User.logIn(username, password);
 
       if (user) {
-        navigation.navigate("Welcome");
+        navigation.navigate("Dashboard");
       } else {
         Alert.alert("Login failed", "Please check your email and password.");
       }

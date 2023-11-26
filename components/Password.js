@@ -1,15 +1,32 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Pressable, Alert } from 'react-native';
+import Parse from 'parse/react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Password = ({ navigation }) => {
-    const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
+    const [enterNewPassword, setEnterNewPassword] = useState("");
+    const user = Parse.User.current();
 
   const handleCheckPress = () => {
-    Alert.alert('Password Saved', 'Changes have been saved successfully.');
-    navigation.navigate("Settings");
+
+
+  if (newPassword === enterNewPassword) {
+  user.setPassword(newPassword);
+
+  user.save()
+    .then(() => {
+      Alert.alert('Password was changed successfully.');
+      navigation.navigate("Settings");
+    })
+    .catch((error) => {
+      Alert.alert('Error while changing password', error);
+    });
+} else {
+  Alert.alert('Password validation failed.');
+}
   };
+
   const onClose = () => {
     navigation.navigate("Settings");
   };
@@ -27,14 +44,7 @@ const Password = ({ navigation }) => {
       <Text style={styles.title}>Password</Text>
       <View style={styles.lineItem}/>
         <View style={styles.passwordAlign}>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter Current Password"
-        placeholderTextColor="white"
-        secureTextEntry={true}
-        value={currentPassword}
-        onChangeText={(text) => setCurrentPassword(text)}
-      />
+
       <TextInput
         style={styles.input}
         placeholder="Enter New Password"
@@ -43,6 +53,14 @@ const Password = ({ navigation }) => {
         value={newPassword}
         onChangeText={(text) => setNewPassword(text)}
         />
+      <TextInput
+        style={styles.input}
+        placeholder="Re-Enter your New Password"
+        placeholderTextColor="white"
+        secureTextEntry={true}
+        value={enterNewPassword}
+        onChangeText={(text) => setEnterNewPassword(text)}
+      />
         </View>
     </View>
   );
