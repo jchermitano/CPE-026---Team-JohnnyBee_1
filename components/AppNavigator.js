@@ -9,6 +9,7 @@ import Settings from "./Settings";
 import UserInformation from "./UserInformation";
 import Password from "./Password";
 import Analytics from "./Analytics";
+import Questions from "./Questions";
 import Parse from 'parse/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -30,6 +31,7 @@ export default function AppNavigator() {
         <Stack.Screen name="UserInformation" component={UserInformation} />
         <Stack.Screen name="Password" component={Password} />
         <Stack.Screen name="Analytics" component={Analytics} />
+        <Stack.Screen name="Questions" component={Questions} />
 
       </Stack.Navigator>
     </NavigationContainer>

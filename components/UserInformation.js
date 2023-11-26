@@ -40,6 +40,7 @@ export default UserInformation;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    borderRadius: 20,
     backgroundColor: "#485613",
     padding: 20,
   },

@@ -60,7 +60,7 @@ export default function Welcome({ navigation }) {
 
               <TouchableOpacity
                 style={[styles.button1]}
-                onPress={() => setModalVisible(!modalVisible)}>
+                onPress={() => navigation.navigate("Analytics")}>
                 <Text style={styles.textStyle}>View Analytics</Text>
               </TouchableOpacity>
             </View>
@@ -69,13 +69,14 @@ export default function Welcome({ navigation }) {
       </Modal>
       
       <View style={styles.option}>
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
           <Icon name="menu" style={styles.menuIcon}/>
         </TouchableOpacity>
       </View>
       <Text style={styles.title}>Alarm</Text>
       <ScrollView style={styles.alarmsContainer}>
         {alarms.map((alarm, index) => (
+          <TouchableOpacity onPress={() => navigation.navigate("Questions")}>
           <View key={index} style={styles.alarmItem}>
             <Text style={styles.alarmTime}>{alarm.time}</Text>
             <Switch
@@ -83,6 +84,7 @@ export default function Welcome({ navigation }) {
               onValueChange={() => toggleAlarm(index)}
             />
           </View>
+          </TouchableOpacity >
         ))}
       </ScrollView>
       <Pressable style={styles.addAlarmContainer} onPress={showTimePicker}>
