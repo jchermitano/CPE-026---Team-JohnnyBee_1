@@ -1,34 +1,35 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from "react-native";
+import Parse from 'parse/react-native';
 import Logo from "./Logo";
 
 export default function Login({ navigation }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    // Yawa mano mano muna bhie
+  const handleLogin = async () => {
+    try {
+      const user = await Parse.User.logIn(username, password);
 
-    if (email === "ss@example.com" && password === "wow") {
-
-      navigation.navigate("Dashboard");
-    } else {
-      navigation.navigate("Dashboard");
-
-      alert("Login failed. Please check your email and password.");
+      if (user) {
+        navigation.navigate("Welcome");
+      } else {
+        Alert.alert("Login failed", "Please check your email and password.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Error logging in: " + error.message);
     }
   };
 
   return (
     <View style={styles.container}>
-        <Logo styles={StyleSheet.logostyle}/>
+      <Logo styles={StyleSheet.logostyle} />
       <TextInput
         style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="#fff8d6"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-      />
+        placeholder="Username"
+        value={username}
+        onChangeText={(text) => setUsername(text)}
+      /> 
       <TextInput
         style={styles.input}
         placeholder="Password"

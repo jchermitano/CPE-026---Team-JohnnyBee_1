@@ -1,18 +1,33 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from "react-native";
+import Parse from 'parse/react-native';
 import Logo from "./Logo";
 
 export default function SignUp({ navigation }) {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [usern, setUsern] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSignUp = () => {
-    // herp me
-    alert("Sign up successful!");
+  const handleSignUp = async () => {
+    try {
+      if (password === confirmPassword && username && email) {
+        const user = new Parse.User();
+        user.set('username', username);
+        user.set('password', password);
+        user.set('email', email);
 
-    // Hump me 
-    navigation.navigate("Dashboard");
+        await user.signUp();
+
+        Alert.alert('Registration successful!', 'You can now log in with your new account.');
+        navigation.navigate("Login");
+      } else {
+        Alert.alert('Registration failed', 'Please fill in all the fields and make sure passwords match.');
+      }
+    } catch (error) {
+      console.error('Error registering:', error);
+      Alert.alert('Error', `Error registering: ${error.message}`);
+    }
   };
 
   return (
@@ -20,25 +35,29 @@ export default function SignUp({ navigation }) {
       <Logo/>
       <TextInput
         style={styles.input}
+        placeholder="Username"
+        value={username}
+        onChangeText={(text) => setUsername(text)}
+      />
+      <TextInput
+        style={styles.input}
         placeholder="Email"
-        placeholderTextColor="#fff8d6"
         value={email}
         onChangeText={(text) => setEmail(text)}
       />
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        placeholderTextColor="#fff8d6"
-        value={usern}
-        onChangeText={(text) => setUsern(text)}
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={(text) => setPassword(text)}
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#fff8d6"
-        secureTextEntry={true}
-        value={password}
-        onChangeText={(text) => setPassword(text)}
+        placeholder="Confirm Password"
+        secureTextEntry
+        value={confirmPassword}
+        onChangeText={(text) => setConfirmPassword(text)}
       />
       <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
         <Text style={styles.signUpText}>Create Account</Text>

@@ -8,6 +8,13 @@ import Dashboard from "./Dashboard";
 import Settings from "./Settings";
 import UserInformation from "./UserInformation";
 import Password from "./Password";
+import Analytics from "./Analytics";
+import Parse from 'parse/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+Parse.setAsyncStorage(AsyncStorage);
+Parse.initialize('uaqjHpPi1HUwWir9lGFA5JjVXyQ9kBx0q9yo1aJG', 'MeUD3QR79OFTfLwBOvwBTWcVrOKleju08058MJYm');
+Parse.serverURL = 'https://parseapi.back4app.com/';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +29,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="UserInformation" component={UserInformation} />
         <Stack.Screen name="Password" component={Password} />
+        <Stack.Screen name="Analytics" component={Analytics} />
 
       </Stack.Navigator>
     </NavigationContainer>

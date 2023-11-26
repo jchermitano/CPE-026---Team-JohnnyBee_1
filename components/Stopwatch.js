@@ -50,6 +50,7 @@ const formatTime = (seconds) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Stopwatch</Text>
       <Text style={styles.timer}>{formatTime(elapsedTime / 1000)}</Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={startStop}>
@@ -69,6 +70,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#485613",
     alignItems: "center",
     justifyContent: "center"
+  },
+  title: {
+    fontSize: 50,
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+    marginBottom: 20,
   },
   timer: {
     color: '#fff8d6',
