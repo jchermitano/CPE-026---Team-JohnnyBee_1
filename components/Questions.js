@@ -2,17 +2,24 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Modal, StyleSheet, TouchableOpacity, Alert, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { CheckBox } from '@rneui/themed';
-import { ViewArrayTwoTone } from '@mui/icons-material';
+import { Directions, ViewArrayTwoTone } from '@mui/icons-material';
 
 export default function Questions({ navigation }) {
-  const [checked, setChecked] = React.useState(true);
-  const toggleCheckbox = () => setChecked(!checked);
   const [modalVisible, setModalVisible] = useState(false);
+  const [checkboxStates, setCheckboxStates] = useState({});
+
+  const toggleCheckbox = (question) => {
+    setCheckboxStates((prevState) => ({
+      ...prevState,
+      [question]: !prevState[question],
+    }));
+  };
 
   const handleCheckPress = () => {
     Alert.alert('Questions Saved', 'Changes have been saved successfully.');
     navigation.navigate("Dashboard");
   };
+
   const onClose = () => {
     navigation.navigate("Dashboard");
   };
@@ -90,21 +97,25 @@ export default function Questions({ navigation }) {
       </TouchableOpacity>
       </View >
       <View style={styles.questionsContainer}>
+      <View style={styles.view}>
   <ScrollView style={styles.inputContainer}>
     {questions.map((Questions) => (
       <Text key={Questions} style={[styles.questionStyle]}multiline>
         {Questions}
         <CheckBox
-           checked={checked}
-           onPress={toggleCheckbox}
-           iconType="material-community"
-           checkedIcon="checkbox-outline"
-           uncheckedIcon={'checkbox-blank-outline'}
-         />
+                style={styles.checkBox}
+                checked={checkboxStates[Questions]}
+                onPress={() => toggleCheckbox(Questions)}
+                iconType="material-community"
+                checkedIcon="checkbox-outline"
+                uncheckedIcon={'checkbox-blank-outline'}
+                checkedColor="#6b4406"
+              />
       </Text>
-
+      
     ))}
   </ScrollView>
+  </View>
 </View>
 
     </View>
@@ -120,7 +131,11 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 20,
     backgroundColor: '#485613',
   },
+  view: {
+    flexDirection: 'row',
+  },
   checkBox: {
+    marginLeft: 150,
     paddingTop: 10,
   },
   questionsContainer: {

@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   checkIcon: {
     fontSize: 30,
     color: "white",
-    paddingLeft: 320,
+    paddingLeft: 300,
   },
   icon: {
     flexDirection: "row",
