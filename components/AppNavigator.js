@@ -33,6 +33,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Analytics" component={Analytics} />
         <Stack.Screen name="Questions" component={Questions} />
 
+
       </Stack.Navigator>
     </NavigationContainer>
   );

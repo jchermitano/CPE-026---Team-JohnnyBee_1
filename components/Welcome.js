@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { StyleSheet, Modal, Text, View, Switch, ScrollView, Pressable, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
+import { StyleSheet, Modal, Text, View, Switch, ScrollView, Pressable, Alert, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import AlertMessage from "./alert/AlertMessage";
 
 export default function Welcome({ navigation }) {
   const [alarms, setAlarms] = useState([]);
@@ -34,20 +35,39 @@ export default function Welcome({ navigation }) {
     setAlarms(updatedAlarms);
   };
 
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modal1Visible, setModal1Visible] = useState(false);
+  const [modal2Visible, setModal2Visible] = useState(false);
 
   const closeModal = () => {
-    setModalVisible(false);
+    setModal1Visible(false);
+    setModal2Visible(false);
+  };
+
+  const okmodal = () => {
+    Alert.alert('Alarm Saved', 'Changes have been saved successfully.');
+    setModal2Visible(false);
+  };
+
+  const handleContinue = () => {
+    setModal2Visible(false);
+  };
+
+  const handleCancel = () => {
+    console.log('Canceled...');
+  };
+
+  const onPressButton = () => {
+    AlertMessage(handleContinue, handleCancel);
   };
 
   return (
     <View style={styles.container}>
-      <Modal
+      <Modal // modal 1: for settings and view analytics
         animationType="none"
         transparent={true}
-        visible={modalVisible}
+        visible={modal1Visible}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          setModal1Visible(!modal1Visible);
         }}>
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.centeredView}>
@@ -68,15 +88,56 @@ export default function Welcome({ navigation }) {
         </TouchableWithoutFeedback>
       </Modal>
       
+      <Modal // modal 2: to modify alarm and questionnaires -------------------------------------
+        animationType="none"
+        transparent={true}
+        visible={modal2Visible}
+        onRequestClose={() => {
+          setModal2Visible(!modal2Visible);
+        }}>
+        <TouchableWithoutFeedback onPress={closeModal}>
+          <View style={styles.centeredView2}>
+            <View style={styles.modalView2}>
+              <TouchableOpacity>
+              {alarms.map((alarm, index) => (
+          <View key={index} style={styles.alarmItem2}>
+            <Text style={styles.alarmTime2}>{alarm.time}</Text>
+          </View>
+        ))}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button2]}
+                onPress={() => navigation.navigate("Questions")}>
+                <Text style={styles.textStyle2}>Add a Question</Text>
+              </TouchableOpacity>
+              <View style={styles.view}>
+              <TouchableOpacity
+                style={[styles.cancelButton]}
+                onPress={onPressButton}>
+                <Text style={styles.textStyle2}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.okButton]}
+                onPress={okmodal}>
+                <Text style={styles.textStyle2}>OK</Text>
+              </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+
       <View style={styles.option}>
-        <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+        <TouchableOpacity onPress={() => setModal1Visible(!modal1Visible)}>
           <Icon name="menu" style={styles.menuIcon}/>
         </TouchableOpacity>
       </View>
+
       <Text style={styles.title}>Alarm</Text>
       <ScrollView style={styles.alarmsContainer}>
         {alarms.map((alarm, index) => (
-          <TouchableOpacity onPress={() => navigation.navigate("Questions")}>
+          <TouchableOpacity onPress={() => setModal2Visible(!modal2Visible)}>
           <View key={index} style={styles.alarmItem}>
             <Text style={styles.alarmTime}>{alarm.time}</Text>
             <Switch
@@ -87,6 +148,7 @@ export default function Welcome({ navigation }) {
           </TouchableOpacity >
         ))}
       </ScrollView>
+
       <Pressable style={styles.addAlarmContainer} onPress={showTimePicker}>
         <Icon name="add" style={styles.addIcon} />
       </Pressable>
@@ -105,6 +167,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#485613",
     padding: 20,
+  },
+  view:{
+    flexDirection: 'row',
+    paddingLeft: 120,
   },
   title: {
     fontSize: 30,
@@ -136,14 +202,31 @@ const styles = StyleSheet.create({
     color: "white",
   },
 
+  alarmItem2: { // for modal 2222222222222222222222222222222222222222222222
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderRadius: 20,
+    padding: 10,
+    marginTop: 20,
+    marginVertical: 5,
+    marginHorizontal: 10
+  },
+
+  alarmTime2: { // for modal 2222222222222222222222222222222222222222222222
+    fontSize: 60,
+    color: "#6b4406",
+    fontWeight: "bold",
+  },
+
   addAlarmContainer: {
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
     marginVertical: 10,
-    width: 50, // Adjust the width as needed
-    height: 50, // Adjust the height as needed
-    borderRadius: 50, // Half of the width and height for a circle
+    width: 50, 
+    height: 50, 
+    borderRadius: 50, 
     backgroundColor: "#b07c3b"
   },
 
@@ -159,14 +242,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 30,
   },
+  centeredView2: { // for modal 2222222222222222222222222222222222222222222222
+    flex: 1,
+    alignItems: 'center',
+    marginTop: 30,
+  },
   modalView: {
     margin: 20,
     justifyContent: "space-between",
     borderRadius: 20,
     padding:15,
     alignItems: 'center',
-},
-button: {
+  },
+  modalView2: { // for modal 2222222222222222222222222222222222222222222222
+  margin: 20,
+  width: 380,
+  height: 550,
+  marginTop: 170,
+  backgroundColor: '#fff8d6',
+  justifyContent: "space-between",
+  borderRadius: 20,
+  padding:15,
+  alignItems: 'center',
+  },
+  button: {
     backgroundColor: "#fff8d6",
     paddingVertical: 10,
     paddingHorizontal: 30,
@@ -176,8 +275,30 @@ button: {
     paddingRight: 160,
     borderWidth:2,
     marginTop: 5,
-},
-button1: {
+  },
+  cancelButton: {// for modal 2222222222222222222222222222222222222222222222
+    backgroundColor: "#6b4406",
+    paddingVertical: 10,
+    width: 110,
+    paddingHorizontal: 30,
+    borderColor: '#fff8d6',
+    borderRadius: 15,
+    borderWidth:2,
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  okButton: {// for modal 2222222222222222222222222222222222222222222222
+    backgroundColor: "#b07c3b",
+    paddingVertical: 10,
+    width: 110,
+    paddingHorizontal: 30,
+    borderColor: '#fff8d6',
+    borderRadius: 15,
+    borderWidth:2,
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  button1: {
     backgroundColor: "#fff8d6",
     paddingVertical: 10,
     paddingHorizontal: 30,
@@ -187,7 +308,18 @@ button1: {
     paddingLeft: 10,
     paddingRight: 120,
     marginTop: 5,
-},
+  },
+  button2: {// for modal 2222222222222222222222222222222222222222222222
+    backgroundColor: "#788f25",
+    paddingVertical: 10,
+    width: 220,
+    paddingHorizontal: 30,
+    borderColor: '#fff8d6',
+    borderRadius: 15,
+    borderWidth:2,
+    alignItems: 'center',
+    marginTop: 5,
+  },
   buttonOpen: {
     color: '#fff8d6',
     backgroundColor: '#F194FF',
@@ -195,6 +327,11 @@ button1: {
   buttonClose: {
     color: '#fff8d6',
     backgroundColor: '#2196F3',
+  },
+  textStyle2: { // for modal 2222222222222222222222222222222222222222222222
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   textStyle: {
     color: 'black',
