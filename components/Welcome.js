@@ -39,22 +39,22 @@ export default function Welcome({ navigation }) {
   // Function to add alarm to Backend
   const addAlarmToBackend = (time, isOn) => {
     if (time) {
-      const Alarm = new Parse.Object("Alarm");
-      Alarm.set("userId", Parse.User.current());
-      Alarm.set("time", time);
-      Alarm.set("isOn", isOn);
-      Alarm.save().then(alarm => {
+  const Alarm = new Parse.Object("Alarm");
+    Alarm.set("userId", Parse.User.current());
+    Alarm.set("time", time);
+    Alarm.set("isOn", isOn);
+    Alarm.save().then(alarm => {
         // If successful, update state with new alarm
-        setAlarms([...alarms, {
-          id: alarm.id,
-          time: time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-          isOn: isOn
-        }]);
+      setAlarms([...alarms, {
+        id: alarm.id,
+        time: time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        isOn: isOn
+    }]);
         Alert.alert('Success', 'Alarm has been set.');
-      }).catch(error => {
+    }).catch(error => {
         console.error('Error saving alarm', error);
-      });
-    }
+    });
+  }
   };
 
   // Add alarm when a time is picked in DateTimePicker
