@@ -4,7 +4,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AlertMessage from "./alert/AlertMessage";
 
-export default function Welcome({ navigation }) {
+export default function Alarm({ navigation }) {
   const [alarms, setAlarms] = useState([]);
   const [isAlarmOn, setIsAlarmOn] = useState(false);
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
@@ -20,47 +20,13 @@ export default function Welcome({ navigation }) {
     hideTimePicker();
   };
 
-  useEffect(() => {
-    const query = new Parse.Query("Alarm");
-    query.equalTo("userId", Parse.User.current()); // Link the alarms to the current user
-    query.find().then(results => {
-      // If successful, update the alarms state with the fetched data
-      const loadedAlarms = results.map(alarm => ({
-        id: alarm.id,
-        time: alarm.get("time").toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        isOn: alarm.get("isOn"),
-      }));
-      setAlarms(loadedAlarms);
-    }).catch(error => {
-      console.error('Error fetching alarms', error);
-    });
-  }, []);
-
-  // Function to add alarm to Backend
-  const addAlarmToBackend = (time, isOn) => {
-    if (time) {
-  const Alarm = new Parse.Object("Alarm");
-    Alarm.set("userId", Parse.User.current());
-    Alarm.set("time", time);
-    Alarm.set("isOn", isOn);
-    Alarm.save().then(alarm => {
-        // If successful, update state with new alarm
-      setAlarms([...alarms, {
-        id: alarm.id,
-        time: time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        isOn: isOn
-    }]);
-        Alert.alert('Success', 'Alarm has been set.');
-    }).catch(error => {
-        console.error('Error saving alarm', error);
-    });
-  }
-  };
-
-  // Add alarm when a time is picked in DateTimePicker
   const addAlarm = (time) => {
-    const isAlarmOn = true; // by default when adding an alarm, we can set it to be ON
-    addAlarmToBackend(time, isAlarmOn);
+    if (time) {
+      const formattedTime = time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      const newAlarm = { time: formattedTime, isOn: isAlarmOn };
+      setAlarms([...alarms, newAlarm]);
+      setSelectedTime(null);
+    }
   };
 
   const toggleAlarm = (index) => {
