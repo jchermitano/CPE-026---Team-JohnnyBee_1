@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Modal, StyleSheet, TouchableOpacity, Alert, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { CheckBox } from '@rneui/themed';
-import { Directions, ViewArrayTwoTone } from '@mui/icons-material';
 
 export default function Questions({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -95,7 +94,7 @@ export default function Questions({ navigation }) {
       <TouchableOpacity style={styles.button} onPress={questionsHandler}>
         <Text style={styles.addText}>Add</Text>
       </TouchableOpacity>
-      </View >
+      </View>
       <View style={styles.questionsContainer}>
       <View style={styles.view}>
   <ScrollView style={styles.inputContainer}>
