@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Welcome from "./Welcome"; 
+import Alarm from "./Welcome"; 
 import Timer from "./TimerScreen";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Stopwatch from "./Stopwatch";
@@ -25,7 +25,7 @@ export default function Dashboard() {
     >
       <Tab.Screen
         name="Alarm" 
-        component={Welcome}
+        component={Alarm}
         options={{
           tabBarLabel: "Alarm",
           tabBarIcon: ({ color, size }) => (

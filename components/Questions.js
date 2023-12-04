@@ -1,17 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Modal, StyleSheet, TouchableOpacity, Alert, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { CheckBox } from '@rneui/themed';
+import Parse from 'parse/react-native';
 
 export default function Questions({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [checkboxStates, setCheckboxStates] = useState({});
 
-  const toggleCheckbox = (question) => {
-    setCheckboxStates((prevState) => ({
-      ...prevState,
-      [question]: !prevState[question],
-    }));
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      const query = new Parse.Query('Question');
+      try {
+        const parseQuestions = await query.find();
+        const fetchedQuestions = parseQuestions.map((q) => {
+          const id = q.id;
+          const text = q.get('text');
+          const isChecked = q.get('isChecked');
+          return { id, text, isChecked };
+        });
+        setQuestions(fetchedQuestions);
+        // Set initial checkbox states
+        const initialCheckboxStates = {};
+        fetchedQuestions.forEach((q) => {
+          initialCheckboxStates[q.id] = q.isChecked;
+        });
+        setCheckboxStates(initialCheckboxStates);
+      } catch (error) {
+        Alert.alert('Error', 'Unable to fetch questions from backend.');
+      }
+    };
+
+    fetchQuestions();
+  }, []);
+
+  // Handler to add a new question to the Parse database and update local state.
+  const questionsHandler = async () => {
+    if (!enteredQuestions.trim()) {
+      Alert.alert('Error', 'Please enter a question.');
+      return;
+    }
+  
+    const newQuestion = new Parse.Object('Question');
+    newQuestion.set('text', enteredQuestions);
+    newQuestion.set('isChecked', false); // Assuming 'isChecked' is a field in your Parse class
+  
+    try {
+      await newQuestion.save();
+      setQuestions(prevQuestions => [
+        ...prevQuestions,
+        { id: newQuestion.id, text: enteredQuestions, isChecked: false }
+      ]);
+      setCheckboxStates(prevStates => ({
+        ...prevStates,
+        [newQuestion.id]: false,
+      }));
+      setEnteredQuestions('');
+    } catch (error) {
+      console.error('Error while saving the question:', error);
+      Alert.alert('Error', `Could not save the question: ${error.message}`);
+    }
+  };
+
+  // Handler to toggle the checkbox state for a question in the Parse database and update local state.
+  const toggleCheckbox = async (questionId) => {
+    // Update checkbox state locally
+    const updatedCheckboxStates = {
+      ...checkboxStates,
+      [questionId]: !checkboxStates[questionId],
+    };
+    setCheckboxStates(updatedCheckboxStates);
+
+    // Find the question in the local state, update its isChecked property, and save to Parse.
+    const index = questions.findIndex((q) => q.id === questionId);
+    const questionToToggle = questions[index];
+    const parseQuestion = new Parse.Object('Question');
+    parseQuestion.id = questionId;
+    parseQuestion.set('isChecked', updatedCheckboxStates[questionId]);
+
+    try {
+      await parseQuestion.save();
+    } catch (error) {
+      Alert.alert('Error', 'Unable to update question status.');
+    }
   };
 
   const handleCheckPress = () => {
@@ -25,14 +96,6 @@ export default function Questions({ navigation }) {
 
   const [enteredQuestions, setEnteredQuestions] = useState('');
   const [questions, setQuestions] = useState([]);
-
-  function questionsHandler() {
-    setQuestions((currentCourseGoals) =>[
-      ...currentCourseGoals,
-      enteredQuestions,
-    ]);
-    setEnteredQuestions('');
-  };
 
   function questionInputHandler(enteredText) {
     setEnteredQuestions(enteredText);
